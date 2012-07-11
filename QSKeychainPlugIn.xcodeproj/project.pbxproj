@@ -19,7 +19,6 @@
 		14DE8C9610D0B1C800851A6F /* Developer.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Developer.xcconfig; sourceTree = "<group>"; };
 		14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = QSPlugIn.xcconfig; sourceTree = "<group>"; };
 		14DE8C9B10D0B1C800851A6F /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		32DBCF980370C29C00C91783 /* QSKeychainPlugIn_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QSKeychainPlugIn_Prefix.pch; sourceTree = "<group>"; };
 		8D1AC9730486D14A00FE50C9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1AC9740486D14A00FE50C9 /* Keychain Module.qsplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Keychain Module.qsplugin"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45BF77F15ADCA300016E503 /* Quicksilver.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Quicksilver.pch; sourceTree = "<group>"; };
@@ -47,7 +46,6 @@
 			children = (
 				14DE8C8810D0B19200851A6F /* Configuration */,
 				32DBCF9E0370C38000C91783 /* Classes */,
-				32DBCF9F0370C38200C91783 /* Other Sources */,
 				0259C582FE90428111CA0C5A /* Resources */,
 				1ED78706FE9D4A0611CA0C5A /* Products */,
 				2E58F364FFB232C311CA0CBA /* Frameworks */,
@@ -101,14 +99,6 @@
 				E1CF9868073372D000C99604 /* QSKeychainSource.m */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
-		};
-		32DBCF9F0370C38200C91783 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				32DBCF980370C29C00C91783 /* QSKeychainPlugIn_Prefix.pch */,
-			);
-			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
