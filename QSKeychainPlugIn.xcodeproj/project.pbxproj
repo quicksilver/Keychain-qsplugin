@@ -191,7 +191,7 @@
 			baseConfigurationReference = 14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */;
 			buildSettings = {
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PRODUCT_NAME = "Keychain Module";
+				PRODUCT_NAME = "Keychain Plugin";
 			};
 			name = Debug;
 		};
@@ -200,7 +200,7 @@
 			baseConfigurationReference = 14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */;
 			buildSettings = {
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				PRODUCT_NAME = "Keychain Module";
+				PRODUCT_NAME = "Keychain Plugin";
 			};
 			name = Release;
 		};
