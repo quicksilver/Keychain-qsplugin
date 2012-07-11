@@ -140,7 +140,7 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 	if (!SecKeychainCopySearchList((CFArrayRef *)&searchList)){
 		
 		
-		int i;
+		NSInteger i;
 		for (i=0;i<[searchList count];i++){
 			char 				kcPath[1024];
 			UInt32 				kcPathLen = 1024;
@@ -342,7 +342,7 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 	NSString *password=nil;
 	if (!(status=SecKeychainSearchCreateFromAttributes(keychainRef,class,&attributes,&searchRef))){
 		while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-			int length;
+			NSInteger length;
 			void *data;
 			if(SecKeychainItemCopyContent(itemRef, NULL, NULL, &length, &data)==noErr) {
                 password=[NSString stringWithCString:data length: length];
