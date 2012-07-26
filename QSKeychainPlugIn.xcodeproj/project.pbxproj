@@ -3,12 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 42;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7FA4EB030912B84D007DB407 /* QSCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA4EB010912B84D007DB407 /* QSCore.framework */; };
-		7FA4EB040912B84D007DB407 /* QSFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FA4EB020912B84D007DB407 /* QSFoundation.framework */; };
 		8D1AC9700486D14A00FE50C9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD92D38A0106425D02CA0E72 /* Cocoa.framework */; };
 		E1CF9869073372D000C99604 /* QSKeychainSource.h in Resources */ = {isa = PBXBuildFile; fileRef = E1CF9867073372D000C99604 /* QSKeychainSource.h */; };
 		E1CF986A073372D000C99604 /* QSKeychainSource.m in Sources */ = {isa = PBXBuildFile; fileRef = E1CF9868073372D000C99604 /* QSKeychainSource.m */; };
@@ -19,16 +17,11 @@
 		14DE8C9410D0B1C800851A6F /* Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Common.xcconfig; sourceTree = "<group>"; };
 		14DE8C9510D0B1C800851A6F /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		14DE8C9610D0B1C800851A6F /* Developer.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Developer.xcconfig; sourceTree = "<group>"; };
-		14DE8C9710D0B1C800851A6F /* QSPlugIn_Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = QSPlugIn_Debug.xcconfig; sourceTree = "<group>"; };
-		14DE8C9810D0B1C800851A6F /* QSPlugIn_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QSPlugIn_Prefix.pch; sourceTree = "<group>"; };
-		14DE8C9910D0B1C800851A6F /* QSPlugIn_Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = QSPlugIn_Release.xcconfig; sourceTree = "<group>"; };
 		14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = QSPlugIn.xcconfig; sourceTree = "<group>"; };
 		14DE8C9B10D0B1C800851A6F /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
-		32DBCF980370C29C00C91783 /* QSKeychainPlugIn_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QSKeychainPlugIn_Prefix.pch; sourceTree = "<group>"; };
-		7FA4EB010912B84D007DB407 /* QSCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QSCore.framework; path = ../../../../Developer/Build/Release/QSCore.framework; sourceTree = SOURCE_ROOT; };
-		7FA4EB020912B84D007DB407 /* QSFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QSFoundation.framework; path = ../../../../Developer/Build/Release/QSFoundation.framework; sourceTree = SOURCE_ROOT; };
 		8D1AC9730486D14A00FE50C9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1AC9740486D14A00FE50C9 /* Keychain Module.qsplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Keychain Module.qsplugin"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D45BF77F15ADCA300016E503 /* Quicksilver.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Quicksilver.pch; sourceTree = "<group>"; };
 		DD92D38A0106425D02CA0E72 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		E1CF9867073372D000C99604 /* QSKeychainSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = QSKeychainSource.h; sourceTree = "<group>"; };
 		E1CF9868073372D000C99604 /* QSKeychainSource.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = QSKeychainSource.m; sourceTree = "<group>"; };
@@ -42,8 +35,6 @@
 			files = (
 				8D1AC9700486D14A00FE50C9 /* Cocoa.framework in Frameworks */,
 				E1CF98860733738F00C99604 /* Security.framework in Frameworks */,
-				7FA4EB030912B84D007DB407 /* QSCore.framework in Frameworks */,
-				7FA4EB040912B84D007DB407 /* QSFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -55,7 +46,6 @@
 			children = (
 				14DE8C8810D0B19200851A6F /* Configuration */,
 				32DBCF9E0370C38000C91783 /* Classes */,
-				32DBCF9F0370C38200C91783 /* Other Sources */,
 				0259C582FE90428111CA0C5A /* Resources */,
 				1ED78706FE9D4A0611CA0C5A /* Products */,
 				2E58F364FFB232C311CA0CBA /* Frameworks */,
@@ -74,17 +64,16 @@
 		14DE8C8810D0B19200851A6F /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				D45BF77F15ADCA300016E503 /* Quicksilver.pch */,
 				14DE8C9410D0B1C800851A6F /* Common.xcconfig */,
 				14DE8C9510D0B1C800851A6F /* Debug.xcconfig */,
 				14DE8C9610D0B1C800851A6F /* Developer.xcconfig */,
-				14DE8C9710D0B1C800851A6F /* QSPlugIn_Debug.xcconfig */,
-				14DE8C9810D0B1C800851A6F /* QSPlugIn_Prefix.pch */,
-				14DE8C9910D0B1C800851A6F /* QSPlugIn_Release.xcconfig */,
 				14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */,
 				14DE8C9B10D0B1C800851A6F /* Release.xcconfig */,
 			);
-			path = Configuration;
-			sourceTree = QS_SOURCE_ROOT;
+			name = Configuration;
+			path = /private/tmp/QS/Configuration;
+			sourceTree = "<absolute>";
 		};
 		1ED78706FE9D4A0611CA0C5A /* Products */ = {
 			isa = PBXGroup;
@@ -97,8 +86,6 @@
 		2E58F364FFB232C311CA0CBA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7FA4EB010912B84D007DB407 /* QSCore.framework */,
-				7FA4EB020912B84D007DB407 /* QSFoundation.framework */,
 				E1CF98850733738F00C99604 /* Security.framework */,
 				DD92D38A0106425D02CA0E72 /* Cocoa.framework */,
 			);
@@ -112,14 +99,6 @@
 				E1CF9868073372D000C99604 /* QSKeychainSource.m */,
 			);
 			name = Classes;
-			sourceTree = "<group>";
-		};
-		32DBCF9F0370C38200C91783 /* Other Sources */ = {
-			isa = PBXGroup;
-			children = (
-				32DBCF980370C29C00C91783 /* QSKeychainPlugIn_Prefix.pch */,
-			);
-			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,9 +128,16 @@
 /* Begin PBXProject section */
 		0259C573FE90428111CA0C5A /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0430;
+			};
 			buildConfigurationList = 7FFF244D085E488500266176 /* Build configuration list for PBXProject "QSKeychainPlugIn" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				en,
+			);
 			mainGroup = 0259C574FE90428111CA0C5A /* QSKeychainPlugIn */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -202,21 +188,19 @@
 /* Begin XCBuildConfiguration section */
 		7FFF244A085E488500266176 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 14DE8C9710D0B1C800851A6F /* QSPlugIn_Debug.xcconfig */;
+			baseConfigurationReference = 14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */;
 			buildSettings = {
-				OTHER_LDFLAGS = "-bundle";
-				PRODUCT_NAME = "Keychain Module";
-				ZERO_LINK = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				PRODUCT_NAME = "Keychain Plugin";
 			};
 			name = Debug;
 		};
 		7FFF244B085E488500266176 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 14DE8C9910D0B1C800851A6F /* QSPlugIn_Release.xcconfig */;
+			baseConfigurationReference = 14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */;
 			buildSettings = {
-				OTHER_LDFLAGS = "-bundle";
-				PRODUCT_NAME = "Keychain Module";
-				ZERO_LINK = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				PRODUCT_NAME = "Keychain Plugin";
 			};
 			name = Release;
 		};

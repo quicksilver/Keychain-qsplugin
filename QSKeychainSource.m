@@ -1,9 +1,4 @@
-
-
 #import "QSKeychainSource.h"
-
-#import <QSCore/QSCore.h>
-#import <QSFoundation/QSFoundation.h>
 #include <Security/Security.h>
 #include <CoreServices/CoreServices.h>
 
@@ -29,15 +24,15 @@ SecItemClass keychainClassForType(NSString *class){
 	if ([class isEqualToString:QSKeychainGenericPasswordType])return kSecGenericPasswordItemClass;
 	if ([class isEqualToString:QSKeychainAppleSharePasswordType])return kSecAppleSharePasswordItemClass;
 	if ([class isEqualToString:QSKeychainCertificateType])return kSecCertificateItemClass;
-	return nil;
+	return NO;
 }	
 
 static OSStatus logKeychainEntry(SecKeychainItemRef itemRef)
 {
-	OSStatus                                        result;
+	OSStatus                        result = 0;
 	SecKeychainAttribute            attr;
 	SecKeychainAttributeList        attrList;
-	UInt32                                          length; 
+	UInt32                          length; 
 	//	void                                            *outData;
 	
 	/* the attribute we want is the account name */
@@ -48,36 +43,36 @@ static OSStatus logKeychainEntry(SecKeychainItemRef itemRef)
 	attrList.count = 1;
 	attrList.attr = &attr;
 	
-	attr.tag = kSecCreationDateItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cdat - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecModDateItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"mdat - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecDescriptionItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"desc - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCommentItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"icmt - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCreatorItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crtr - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecTypeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"type - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecScriptCodeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"scrp - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecLabelItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"labl - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecInvisibleItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"invi - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecNegativeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"nega - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCustomIconItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cusi - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecAccountItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"acct - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecServiceItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"svce - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecGenericItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"gena - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecSecurityDomainItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"sdmn - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecServerItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"srvr - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecAuthenticationTypeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"atyp - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecPortItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"port - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecPathItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"path - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecVolumeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"vlme - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecAddressItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"addr - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecSignatureItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ssig - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecProtocolItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ptcl - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCertificateType; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ctyp - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCertificateEncoding; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cenc - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCrlType; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crtp - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecCrlEncoding; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crnc - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
-	attr.tag = kSecAlias; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"alis - %@\"",[NSString stringWithCString:attr.data length:attr.length]);
+	attr.tag = kSecCreationDateItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cdat - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecModDateItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"mdat - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecDescriptionItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"desc - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCommentItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"icmt - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCreatorItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crtr - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecTypeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"type - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecScriptCodeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"scrp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecLabelItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"labl - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecInvisibleItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"invi - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecNegativeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"nega - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCustomIconItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cusi - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecAccountItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"acct - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecServiceItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"svce - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecGenericItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"gena - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecSecurityDomainItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"sdmn - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecServerItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"srvr - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecAuthenticationTypeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"atyp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecPortItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"port - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecPathItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"path - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecVolumeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"vlme - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecAddressItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"addr - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecSignatureItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ssig - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecProtocolItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ptcl - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCertificateType; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ctyp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCertificateEncoding; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cenc - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCrlType; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crtp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecCrlEncoding; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crnc - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
+	attr.tag = kSecAlias; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"alis - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
 	
-	return ( result );
+	return result;
 }
 
 NSString *stringForKeychainItemAttribute(SecKeychainItemRef itemRef,SecKeychainAttrType type){	
@@ -123,7 +118,7 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 @implementation QSKeychainSource
 
 - (BOOL)indexIsValidFromDate:(NSDate *)indexDate forEntry:(NSDictionary *)theEntry{
-    NSDate *modDate=[[[NSFileManager defaultManager] fileAttributesAtPath:[@"~/Library/Preferences/com.apple.Keychain.plist" stringByStandardizingPath] traverseLink:YES]fileModificationDate];
+    NSDate *modDate=[[[NSFileManager defaultManager] attributesOfItemAtPath:[@"~/Library/Preferences/com.apple.Keychain.plist" stringByResolvingSymlinksInPath] error:nil] fileModificationDate];
     return [modDate compare:indexDate]==NSOrderedAscending;
 }
 
@@ -131,10 +126,11 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
     return [QSResourceManager imageNamed:@"com.apple.keychainaccess"];
 }
 
-- (NSString *)identifierForObject:(id <QSObject>)object{
+- (NSString *)identifierForObject:(QSObject *)object
+{
 	NSString *path=[object objectForType:QSKeychainType];
 	if (!path) return nil;
-    return [@"[Keychain]:"stringByAppendingString:path];
+	return [@"[Keychain]:"stringByAppendingString:path];
 }
 
 - (NSArray *) objectsForEntry:(NSDictionary *)theEntry{
@@ -143,14 +139,11 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 	
 	NSArray *searchList;
 	if (!SecKeychainCopySearchList((CFArrayRef *)&searchList)){
-		
-		
-		int i;
-		for (i=0;i<[searchList count];i++){
+		for (id search in searchList){
 			char 				kcPath[1024];
 			UInt32 				kcPathLen = 1024;
-			SecKeychainGetPath((SecKeychainRef)[searchList objectAtIndex:i], &kcPathLen, kcPath);
-			NSString *path=[NSString stringWithCString:kcPath length:kcPathLen];
+			SecKeychainGetPath((SecKeychainRef)search, &kcPathLen, kcPath);
+			NSString *path=[NSString stringWithCString:kcPath encoding:NSUTF8StringEncoding];
 			
 			newObject=[QSObject fileObjectWithPath:path];
 			[newObject setObject:path forType:QSKeychainType];
@@ -162,7 +155,6 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 		CFRelease(searchList);	
 	}
 	return objects;
-	return nil;
 }
 
 
@@ -338,8 +330,9 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 	NSString *date=[info objectForKey:NSFileTypeForHFSTypeCode(kSecCreationDateItemAttr)];
 	
 	SecKeychainAttribute attrs[] = {
-	{ kSecCreationDateItemAttr, [date length]+1, [date UTF8String]},
-	{ kSecLabelItemAttr, [label length],[label UTF8String]} };
+		{kSecCreationDateItemAttr, [date length]+1, date},
+		{kSecLabelItemAttr, [label length], label}
+	};
 	///NSLog(@"label '%@' date  %d %d '%@' %@",label,[date length],[date cStringLength],[date dataUsingEncoding:NSUTF8StringEncoding],date);
 	const SecKeychainAttributeList attributes = { sizeof(attrs)/sizeof(attrs[0]),attrs};
 	
@@ -347,10 +340,10 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 	NSString *password=nil;
 	if (!(status=SecKeychainSearchCreateFromAttributes(keychainRef,class,&attributes,&searchRef))){
 		while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-			int length;
+			UInt32 length;
 			void *data;
 			if(SecKeychainItemCopyContent(itemRef, NULL, NULL, &length, &data)==noErr) {
-                password=[NSString stringWithCString:data length: length];
+                password=[NSString stringWithCString:data encoding:NSUTF8StringEncoding];
                 SecKeychainItemFreeContent(NULL, data);
             }
 			//logKeychainEntry(itemRef);
