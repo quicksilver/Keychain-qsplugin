@@ -3,283 +3,370 @@
 #include <CoreServices/CoreServices.h>
 
 #define QSKeychainType @"QSKeychainType"
-#define QSKeychainEntryType @"QSKeychainEntryType"
+#define QSKeychainItemType @"QSKeychainItemType"
 
-#define QSKeychainInternetPasswordType @"QSKeychainInternetPasswordType"
-#define QSKeychainGenericPasswordType @"QSKeychainGenericPasswordType"
-#define QSKeychainAppleSharePasswordType @"QSKeychainAppleSharePasswordType"
-#define QSKeychainCertificateType @"QSKeychainCertificateType"
+#define QSKeychainInternetPasswordType      @"QSKeychainInternetPasswordType"
+#define QSKeychainGenericPasswordType       @"QSKeychainGenericPasswordType"
+#define QSKeychainSecureNoteType            @"QSKeychainSecureNoteType"
+#define QSKeychainAppleSharePasswordType    @"QSKeychainAppleSharePasswordType" /* Deprecated ? */
+#define QSKeychainCertificateType           @"QSKeychainCertificateType"
+#define QSKeychainKeyType                   @"QSKeychainKeyType"
+#define QSKeychainIdentityType              @"QSKeychainIdentityType"
 
-NSString *typeForKeychainClass(SecItemClass itemClass){
-	switch (itemClass){
-		case kSecInternetPasswordItemClass: return QSKeychainInternetPasswordType;
-		case kSecGenericPasswordItemClass: return QSKeychainGenericPasswordType;
-		case kSecAppleSharePasswordItemClass: return QSKeychainAppleSharePasswordType;
-		case kSecCertificateItemClass: return QSKeychainCertificateType;
-	}
+#define QSKeychainSourcePath @"QSKeychainSourcePath"
+
+#define kSecRefValue @"v_Ref"
+
+#define KeychainBundleID @"com.apple.keychainaccess"
+
+NSString *errorForKeychainOSStatus(OSStatus err) {
+    NSString *errorString = (NSString *)SecCopyErrorMessageString(err, NULL);
+    return [errorString autorelease];
+}
+
+NSString *typeForKeychainClass(CFTypeRef itemClass, id itemType) {
+    NSString *itemClassStr = itemClass;
+    if ([itemClassStr isEqualToString:kSecClassGenericPassword])
+        if ([NSFileTypeForHFSTypeCode([itemType unsignedIntegerValue]) isEqualToString:@"'note'"])
+            return QSKeychainSecureNoteType;
+        else
+            return QSKeychainGenericPasswordType;
+    if ([itemClassStr isEqualToString:kSecClassInternetPassword]) return QSKeychainInternetPasswordType;
+    if ([itemClassStr isEqualToString:kSecClassCertificate]) return QSKeychainCertificateType;
+    if ([itemClassStr isEqualToString:kSecClassIdentity]) return QSKeychainIdentityType;
+    if ([itemClassStr isEqualToString:kSecClassKey]) return QSKeychainKeyType;
+    return nil;
+}
+
+CFTypeRef keychainClassForType(NSString *class){
+	if ([class isEqualToString:QSKeychainInternetPasswordType]) return kSecClassInternetPassword;
+	if ([class isEqualToString:QSKeychainGenericPasswordType]) return kSecClassGenericPassword;
+	if ([class isEqualToString:QSKeychainCertificateType]) return kSecClassCertificate;
+    if ([class isEqualToString:QSKeychainIdentityType]) return kSecClassIdentity;
+    if ([class isEqualToString:QSKeychainKeyType]) return kSecClassKey;
 	return nil;
 }
-SecItemClass keychainClassForType(NSString *class){
-	if ([class isEqualToString:QSKeychainInternetPasswordType])return kSecInternetPasswordItemClass;
-	if ([class isEqualToString:QSKeychainGenericPasswordType])return kSecGenericPasswordItemClass;
-	if ([class isEqualToString:QSKeychainAppleSharePasswordType])return kSecAppleSharePasswordItemClass;
-	if ([class isEqualToString:QSKeychainCertificateType])return kSecCertificateItemClass;
-	return NO;
-}	
 
-static OSStatus logKeychainEntry(SecKeychainItemRef itemRef)
-{
-	OSStatus                        result = 0;
-	SecKeychainAttribute            attr;
-	SecKeychainAttributeList        attrList;
-	UInt32                          length; 
-	//	void                                            *outData;
-	
-	/* the attribute we want is the account name */
-	attr.tag = kSecServerItemAttr;
-	attr.length = 0;
-	attr.data = NULL;
-	
-	attrList.count = 1;
-	attrList.attr = &attr;
-	
-	attr.tag = kSecCreationDateItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cdat - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecModDateItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"mdat - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecDescriptionItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"desc - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCommentItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"icmt - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCreatorItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crtr - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecTypeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"type - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecScriptCodeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"scrp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecLabelItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"labl - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecInvisibleItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"invi - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecNegativeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"nega - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCustomIconItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cusi - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecAccountItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"acct - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecServiceItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"svce - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecGenericItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"gena - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecSecurityDomainItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"sdmn - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecServerItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"srvr - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecAuthenticationTypeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"atyp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecPortItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"port - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecPathItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"path - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecVolumeItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"vlme - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecAddressItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"addr - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecSignatureItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ssig - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecProtocolItemAttr; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ptcl - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCertificateType; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"ctyp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCertificateEncoding; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"cenc - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCrlType; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crtp - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecCrlEncoding; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"crnc - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	attr.tag = kSecAlias; if ( SecKeychainItemCopyContent(itemRef, NULL, &attrList, &length, NULL) == noErr ) NSLog(@"\"alis - %@\"",[NSString stringWithCString:attr.data encoding:NSUTF8StringEncoding]);
-	
-	return result;
+NSArray *itemsInKeychainForClass(SecKeychainRef keychainRef, CFTypeRef itemClass) {
+    CFArrayRef results;
+    NSDictionary *query = [NSDictionary dictionaryWithObjectsAndKeys:
+                           itemClass,       kSecClass,
+                           kCFBooleanTrue,  kSecReturnRef,
+                           kCFBooleanTrue,  kSecReturnAttributes,
+                           [NSArray arrayWithObject:(id)keychainRef], kSecMatchSearchList,
+                           kSecMatchLimitAll,  kSecMatchLimit,
+                           nil];
+    OSStatus err = SecItemCopyMatching((CFDictionaryRef)query, (CFTypeRef *)&results);
+	if (err != noErr) {
+        NSLog(@"Failed to get items in Keychain %p: %@ %ld", keychainRef, errorForKeychainOSStatus(err), (long)err);
+        return nil;
+    }
+    return [(NSArray *)results autorelease];
 }
 
-NSString *stringForKeychainItemAttribute(SecKeychainItemRef itemRef,SecKeychainAttrType type){	
-	NSString *value=nil;
-	SecKeychainAttribute attrs[] = {{type,0,NULL}};
-	SecKeychainAttributeList attributes = { sizeof(attrs)/sizeof(attrs[0]),attrs};	
-	if (noErr != SecKeychainItemCopyContent(itemRef, NULL, &attributes, NULL, NULL))
-		return nil;
-	if (attrs[0].length){
-	//	NSData *data=[NSData dataWithBytes:attrs[0].data length:attrs[0].length];	// **** is this causing a leak?
-		//NSLog(@"value %@ %@ %d",NSFileTypeForHFSTypeCode(type),data,attrs[0].length);
-		value=[NSString stringWithCString:attrs[0].data encoding:NSUTF8StringEncoding];
-		//NSLog(@"value %@",value);
-	}
-	SecKeychainItemFreeContent(&attributes, NULL);
-	return value;
+QSObject *objectForKeychainDict(NSDictionary *keychainDict) {
+    /* Filter NSNulls from the dictionary */
+    NSSet *existingKeys = [keychainDict keysOfEntriesPassingTest:^BOOL(id key, id obj, BOOL *stop) { return (!obj || obj != [NSNull null]); }];
+    keychainDict = [keychainDict dictionaryWithValuesForKeys:[existingKeys allObjects]];
+
+    NSString *label = [keychainDict objectForKey:kSecAttrLabel];
+    if (!label) {
+        NSData *subjectData = [keychainDict objectForKey:kSecAttrSubject];
+        label = [[[NSString alloc] initWithData:subjectData encoding:NSASCIIStringEncoding] autorelease];
+    }
+
+    QSObject *itemObject = [QSObject objectWithName:label];
+    [itemObject setObject:keychainDict forType:QSKeychainItemType];
+    [itemObject setPrimaryType:QSKeychainItemType];
+
+    return itemObject;
 }
 
-
-QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass){
-	NSString *type=typeForKeychainClass(itemClass);
-	NSString *label=stringForKeychainItemAttribute(itemRef,kSecLabelItemAttr);
-	
-	NSDictionary *dict=[NSDictionary dictionaryWithObjectsAndKeys:
-		stringForKeychainItemAttribute(itemRef,kSecModDateItemAttr),NSFileTypeForHFSTypeCode(kSecModDateItemAttr),
-		stringForKeychainItemAttribute(itemRef,kSecCreationDateItemAttr),NSFileTypeForHFSTypeCode(kSecCreationDateItemAttr),
-		label,NSFileTypeForHFSTypeCode(kSecLabelItemAttr),
-		stringForKeychainItemAttribute(itemRef,kSecAccountItemAttr),NSFileTypeForHFSTypeCode(kSecAccountItemAttr),
-		stringForKeychainItemAttribute(itemRef,kSecServiceItemAttr),NSFileTypeForHFSTypeCode(kSecServiceItemAttr),
-		stringForKeychainItemAttribute(itemRef,kSecDescriptionItemAttr),NSFileTypeForHFSTypeCode(kSecDescriptionItemAttr),
-		nil];
-	
-	if (!label)label=@"Keychain Item";
-	QSObject *newObject=[QSObject objectWithName:label];
-	[newObject setObject:dict forType:type];
-	[newObject setPrimaryType:type];
-	
-	return ( newObject );
-	
-	return nil;
+BOOL isKeychainLocked(NSString *keychainPath, BOOL *locked) {
+    SecKeychainRef keychainRef = NULL;
+    OSStatus err = SecKeychainOpen([keychainPath fileSystemRepresentation], &keychainRef);
+    if (err) {
+        NSLog(@"Failed opening Keychain %@: %@ (%ld)", keychainPath, errorForKeychainOSStatus(err), (long)err);
+        return NO;
+    }
+    SecKeychainStatus status;
+    err = SecKeychainGetStatus(keychainRef, &status);
+    if (err) {
+        NSLog(@"Failed getting status of Keychain %@: %@ (%ld)", keychainPath, errorForKeychainOSStatus(err), (long)err);
+        CFRelease(keychainRef);
+        return NO;
+    }
+    if (locked)
+        *locked = !(status & kSecUnlockStateStatus);
+    CFRelease(keychainRef);
+    return YES;
 }
+
+NSData *dataForKeychainItem(SecKeychainItemRef itemRef) {
+    if (!itemRef)
+        return nil;
+
+    UInt32 length;
+    void *data;
+    OSStatus status = SecKeychainItemCopyContent(itemRef, NULL, NULL, &length, &data);
+    if (status != noErr) {
+        NSLog(@"Error getting contents of Keychain item %@: %@ %ld", itemRef, errorForKeychainOSStatus(status), (long)status);
+        return nil;
+    }
+    NSData *passwordData = [NSData dataWithBytes:data length:length];
+    SecKeychainItemFreeContent(NULL, data);
+    return passwordData;
+}
+
+OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallbackInfo *info, void *context) {
+    if (keychainEvent == kSecLockEvent || keychainEvent == kSecUnlockEvent) {
+        NSLog(@"Keychain %@ was %@", info->keychain, (keychainEvent == kSecLockEvent ? @"locked" : @"unlocked"));
+        UInt32 pathLength = MAXPATHLEN;
+        char path[pathLength];
+        SecKeychainGetPath(info->keychain, &pathLength, path);
+
+        NSData *pathData = [NSData dataWithBytesNoCopy:path length:pathLength freeWhenDone:NO];
+        NSString *keychainPath = [[[NSString alloc] initWithData:pathData encoding:NSUTF8StringEncoding] autorelease];
+
+        NSString *identifier = [NSString stringWithFormat:@"%@:%@", @"[Keychain]", keychainPath];
+        QSObject *keychainObject = [QSObject objectWithIdentifier:identifier];
+        if (keychainObject)
+            [[NSNotificationCenter defaultCenter] postNotificationName:QSObjectIconModified object:keychainObject];
+    }
+    return noErr;
+}
+
 
 @implementation QSKeychainSource
-
-- (BOOL)indexIsValidFromDate:(NSDate *)indexDate forEntry:(NSDictionary *)theEntry{
-    NSDate *modDate=[[[NSFileManager defaultManager] attributesOfItemAtPath:[@"~/Library/Preferences/com.apple.Keychain.plist" stringByResolvingSymlinksInPath] error:nil] fileModificationDate];
-    return [modDate compare:indexDate]==NSOrderedAscending;
+- (id)init {
+    self = [super init];
+    if (self) {
+        OSStatus err = SecKeychainAddCallback(keychainEventCallback, kSecEveryEventMask, self);
+        if (err != noErr)
+            NSLog(@"Error adding Keychain event callback: %@ %ld", errorForKeychainOSStatus(err), (long)err);
+    }
+    return self;
 }
 
-- (NSImage *) iconForEntry:(NSDictionary *)dict{
-    return [QSResourceManager imageNamed:@"com.apple.keychainaccess"];
+- (void)dealloc {
+    OSStatus err = SecKeychainRemoveCallback(keychainEventCallback);
+    if (err != noErr)
+        NSLog(@"Error removing Keychain event callback: %@ %ld", errorForKeychainOSStatus(err), (long)err);
+    [super dealloc];
+}
+
+- (BOOL)indexIsValidFromDate:(NSDate *)indexDate forEntry:(NSDictionary *)theEntry{
+    NSDate *modDate = [[[NSFileManager defaultManager] attributesOfItemAtPath:[@"~/Library/Preferences/com.apple.Keychain.plist" stringByResolvingSymlinksInPath] error:nil] fileModificationDate];
+    return [modDate compare:indexDate] == NSOrderedAscending;
+}
+
+- (NSImage *)iconForEntry:(NSDictionary *)dict{
+    return [QSResourceManager imageNamed:KeychainBundleID];
 }
 
 - (NSString *)identifierForObject:(QSObject *)object
 {
-	NSString *path=[object objectForType:QSKeychainType];
-	if (!path) return nil;
-	return [@"[Keychain]:"stringByAppendingString:path];
+    NSString *identifier = nil;
+    if ([[object primaryType] isEqualToString:QSKeychainType]) {
+        NSString *path = [object primaryObject];
+        if (path)
+            identifier = [@"[Keychain]:" stringByAppendingString:path];
+    } else if ([[object primaryType] isEqualToString:QSKeychainItemType]) {
+        NSDictionary *info = [object primaryObject];
+        if (info) {
+            NSString *label = [info objectForKey:kSecAttrLabel];
+            identifier = [@"[KeychainItem]:" stringByAppendingString:(label ? label : [[info objectForKey:kSecRefValue] description])];
+        }
+    }
+    return identifier;
 }
 
-- (NSArray *) objectsForEntry:(NSDictionary *)theEntry{
-	NSMutableArray *objects=[NSMutableArray arrayWithCapacity:1];
+- (QSObject *)parentOfObject:(QSObject *)object {
+    QSObject *parent = nil;
+    if ([[object primaryType] isEqualToString:QSKeychainItemType]) {
+        NSString *keychainPath = [object objectForMeta:QSKeychainSourcePath];
+        parent = [QSObject objectWithIdentifier:[@"[Keychain]:" stringByAppendingString:keychainPath]];
+    } else if ([[object primaryType] isEqualToString:QSKeychainType]) {
+        NSString *path = [[NSBundle bundleWithIdentifier:KeychainBundleID] bundlePath];
+        parent = [QSObject fileObjectWithPath:path];
+    }
+    return parent;
+}
+
+- (NSArray *)objectsForEntry:(NSDictionary *)theEntry {
+	NSMutableArray *objects = [NSMutableArray arrayWithCapacity:1];
     QSObject *newObject;
-	
-	NSArray *searchList;
-	if (!SecKeychainCopySearchList((CFArrayRef *)&searchList)){
-		for (id search in searchList){
-			char 				kcPath[1024];
-			UInt32 				kcPathLen = 1024;
-			SecKeychainGetPath((SecKeychainRef)search, &kcPathLen, kcPath);
-			NSString *path=[NSString stringWithCString:kcPath encoding:NSUTF8StringEncoding];
-			
-			newObject=[QSObject fileObjectWithPath:path];
-			[newObject setObject:path forType:QSKeychainType];
-			[newObject setPrimaryType:QSKeychainType];
-			[newObject setLabel:[[path lastPathComponent]stringByDeletingPathExtension]];
-			if (newObject)
-				[objects addObject:newObject];
-		}
-		CFRelease(searchList);	
-	}
+
+	NSArray *searchList = nil;
+    OSStatus err = noErr;
+    err = SecKeychainCopySearchList((CFArrayRef *)&searchList);
+    if (err != noErr) {
+        NSLog(@"Failed to get Keychain search list: %@ (%ld)", errorForKeychainOSStatus(err), (long)err);
+        return nil;
+    }
+    for (id search in searchList) {
+        UInt32 				kcPathLen = MAXPATHLEN;
+        char 				kcPath[kcPathLen];
+        err = SecKeychainGetPath((SecKeychainRef)search, &kcPathLen, kcPath);
+        if (err != noErr) {
+            NSLog(@"Failed to get path of Keychain: %@ (%ld)", errorForKeychainOSStatus(err), (long)err);
+            continue;
+        }
+        NSString *path = [NSString stringWithCString:kcPath encoding:NSUTF8StringEncoding];
+
+        newObject = [QSObject fileObjectWithPath:path];
+        [newObject setObject:path forType:QSKeychainType];
+        [newObject setPrimaryType:QSKeychainType];
+        [newObject setLabel:[[path lastPathComponent] stringByDeletingPathExtension]];
+        if (newObject)
+            [objects addObject:newObject];
+    }
+    CFRelease(searchList);
 	return objects;
 }
 
 
 - (NSString *)detailsOfObject:(QSObject *)object{
-	if ([[object primaryType]isEqualToString:QSKeychainType]){
-		return @"Keychain";
-	}else{
-		
-		NSDictionary *info=[object primaryObject];		
-		NSString *details= [info objectForKey:NSFileTypeForHFSTypeCode(kSecDescriptionItemAttr)];
+    NSDictionary *info = [object objectForType:QSKeychainItemType];
+	if (info) {
+		NSString *details = [info objectForKey:kSecAttrDescription];
 		if (!details)
-			details=[info objectForKey:NSFileTypeForHFSTypeCode(kSecAccountItemAttr)];
+			details = [info objectForKey:kSecAttrAccount];
 		return details;			
 	}
 	return nil; 
 }
 
-- (BOOL)loadChildrenForObject:(QSObject *)object{
-	if (![object objectForType:QSKeychainType]){
+- (BOOL)loadChildrenForObject:(QSObject *)object {
+    if ([object objectForType:QSKeychainType]) {
+        /* Children of a Keychain */
+        NSString *keychainPath = [object objectForType:QSKeychainType];
+
+        NSMutableArray *children = [NSMutableArray arrayWithCapacity:1];
+
+        SecKeychainRef keychainRef = NULL;
+        OSStatus status;
+
+        status = SecKeychainOpen([keychainPath UTF8String], &keychainRef);
+        if (status != noErr) {
+            NSLog(@"Failed to open Keychain at path %@: %@ (%ld)", keychainPath, errorForKeychainOSStatus(status), (long)status);
+            return NO;
+        }
+        NSSet *keychainClasses = [NSSet setWithObjects:kSecClassGenericPassword,
+                                  kSecClassInternetPassword,
+                                  kSecClassCertificate,
+                                  kSecClassKey,
+                                  kSecClassIdentity,
+                                  nil];
+        for (id keychainClass in keychainClasses) {
+            NSArray *results = itemsInKeychainForClass(keychainRef, keychainClass);
+            for (NSDictionary *itemDict in results) {
+                id object = objectForKeychainDict(itemDict);
+                if (object) {
+                    [children addObject:object];
+                    [object setObject:keychainPath forMeta:QSKeychainSourcePath];
+                }
+            }
+        }
+
+        CFRelease(keychainRef);
+        if (children) {
+            [object setChildren:children];
+            return YES;
+        }
+    } else if ([[object primaryType] isEqualToString:QSKeychainItemType]) {
+        /* Children of keychain items */
+        NSDictionary *info = [object primaryObject];
+        NSString *type = typeForKeychainClass([info objectForKey:kSecClass], [info objectForKey:kSecAttrType]);
+        if ([type isEqualToString:QSKeychainSecureNoteType]) {
+            SecKeychainItemRef itemRef = (SecKeychainItemRef)[info objectForKey:kSecRefValue];
+            NSData *noteData = dataForKeychainItem(itemRef);
+
+            id propertyList = [NSPropertyListSerialization propertyListFromData:noteData
+                                                               mutabilityOption:NSPropertyListImmutable
+                                                                         format:NULL
+                                                               errorDescription:NULL];
+
+            QSObject *noteObject = [QSObject objectWithString:[propertyList objectForKey:@"NOTE"]];
+            [object setChildren:[NSArray arrayWithObject:noteObject]];
+            return YES;
+        }
+    } else {
+        /* Load children for Keychain Access.app */
 		[object setChildren:[self objectsForEntry:nil]];
 		return YES;
-	}else{
-	NSString *keychainPath=[object objectForType:QSKeychainType];
-	
-	NSMutableArray *children=[NSMutableArray arrayWithCapacity:1];
-	
-	SecKeychainSearchRef searchRef;
-	SecKeychainRef keychainRef=NULL;
-	SecKeychainItemRef itemRef = NULL;
-	OSStatus status;
-	
-	
-	SecKeychainOpen ([keychainPath UTF8String],&keychainRef);
-	//SecKeychainAttributeList *attrList=NULL;//&attrList;
-	
-	if (!(status=SecKeychainSearchCreateFromAttributes(keychainRef,kSecInternetPasswordItemClass,NULL,&searchRef))){
-		while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-			
-			id object=objectForKeychainRef(itemRef,kSecInternetPasswordItemClass);
-			//logKeychainEntry(itemRef);
-			if (object)[children addObject:object];
-			
-			[object setObject:keychainPath forMeta:@"QSKeychainSourcePath"];
-		}
-		CFRelease(searchRef);
 	}
-	if (!(status=SecKeychainSearchCreateFromAttributes(keychainRef,kSecGenericPasswordItemClass,NULL,&searchRef))){
-		while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-			id object=objectForKeychainRef(itemRef,kSecGenericPasswordItemClass);
-			//	logKeychainEntry(itemRef);
-			if (object)[children addObject:object];
-		}
-		CFRelease(searchRef);
-	}
-	if (!(status=SecKeychainSearchCreateFromAttributes(keychainRef,kSecAppleSharePasswordItemClass,NULL,&searchRef))){
-		while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-			id object=objectForKeychainRef(itemRef,kSecAppleSharePasswordItemClass);
-			//	logKeychainEntry(itemRef);
-			if (object)[children addObject:object];
-		}
-		CFRelease(searchRef);
-	}
-				
-				CFRelease(keychainRef);
-				if (children){
-					[object setChildren:children];
-					return YES;   
-				}
-				return NO;
-				
-				}
+    return NO;
 }
-
 
 // Object Handler Methods
 - (void)setQuickIconForObject:(QSObject *)object{
-    [object setIcon:[QSResourceManager imageNamed:@"com.apple.keychainaccess"]];
+    [object setIcon:[QSResourceManager imageNamed:KeychainBundleID]];
 }
-- (BOOL)loadIconForObject:(QSObject *)object{
-	NSImage *icon=nil;
+
+- (BOOL)loadIconForObject:(QSObject *)object {
+	NSImage *icon = nil;
+    if ([[object primaryType] isEqualToString:QSKeychainItemType]) {
+        NSDictionary *itemDict = [object objectForType:QSKeychainItemType];
+        NSString *type = typeForKeychainClass([itemDict objectForKey:kSecClass], [itemDict objectForKey:kSecAttrType]);
+
+        if ([type isEqualToString:QSKeychainInternetPasswordType]) {
+            icon = [QSResourceManager imageNamed:@"KeychainURLIcon"];
+        } else if ([type isEqualToString:QSKeychainGenericPasswordType]) {
+            icon = [QSResourceManager imageNamed:@"KeychainKeyIcon"];
+        } else if ([type isEqualToString:QSKeychainSecureNoteType]) {
+            icon = [QSResourceManager imageNamed:@"KeychainSecureNoteIcon"];
+        } else if ([type isEqualToString:QSKeychainAppleSharePasswordType]) {
+            icon = [QSResourceManager imageNamed:@"KeychainNetVolIcon"];
+        } else if ([type isEqualToString:QSKeychainCertificateType]) {
+            icon = [QSResourceManager imageNamed:@"KeychainCertificateIcon"];
+        } else if ([type isEqualToString:QSKeychainKeyType]) {
+            icon = [QSResourceManager imageNamed:@"KeychainKeyIcon"];
+        }
+    } else if ([[object primaryType] isEqualToString:QSKeychainType]) {
+        NSString *keychainPath = [object objectForType:QSKeychainType];
+        BOOL state;
+        BOOL res = isKeychainLocked(keychainPath, &state);
+        if (res) {
+            icon = [QSResourceManager imageNamed:(state ? @"KeychainLockedIcon" : @"KeychainUnlockedIcon")];
+        }
+
+        if (!icon)
+            icon = [QSResourceManager imageNamed:KeychainBundleID];
+    }
 	
-	if ([[object primaryType]isEqualToString:QSKeychainInternetPasswordType]){
-		icon=[QSResourceManager imageNamed:@"KeychainURLIcon"];
-	}
-	if ([[object primaryType]isEqualToString:QSKeychainGenericPasswordType]){
-		if ([[[object primaryObject]objectForKey:@"'desc'"]isEqual:@"secure note"])
-			icon=[QSResourceManager imageNamed:@"KeychainSecureNoteIcon"];
-		else
-			icon=[QSResourceManager imageNamed:@"KeychainKeyIcon"];
-	}
-	if ([[object primaryType]isEqualToString:QSKeychainAppleSharePasswordType]){
-		icon=[QSResourceManager imageNamed:@"KeychainNetVolIcon"];
-	}
-	
-	if (icon){
+	if (icon) {
 		[object setIcon:icon];
 		return YES;
 	}
 	
 	return NO;
 }
-- (BOOL)drawIconForObject:(QSObject *)object inRect:(NSRect)rect flipped:(BOOL)flipped{
-	if(NSWidth(rect)<=32) return NO;
-	NSImage *image=[QSResourceManager imageNamed:@"com.apple.keychainaccess"];
-	
+- (BOOL)drawIconForObject:(QSObject *)object inRect:(NSRect)rect flipped:(BOOL)flipped {
+	if (NSWidth(rect) <= 32)
+        return NO;
+	NSImage *image = [QSResourceManager imageNamed:KeychainBundleID];
+
     [image setSize:[[image bestRepresentationForSize:rect.size] size]];
 	//[image adjustSizeToDrawAtSize:rect.size];
 	[image setFlipped:flipped];
 	[image drawInRect:rect fromRect:rectFromSize([image size]) operation:NSCompositeSourceOver fraction:1.0];
-	
-	if ([object iconLoaded]){
-		NSImage *cornerBadge=[object icon];
-		if (cornerBadge!=image){
+
+	if ([object iconLoaded]) {
+		NSImage *cornerBadge = [object icon];
+		if (cornerBadge != image) {
 			[cornerBadge setFlipped:flipped]; 
-			NSImageRep *bestBadgeRep=[cornerBadge bestRepresentationForSize:rect.size];    
+			NSImageRep *bestBadgeRep = [cornerBadge bestRepresentationForSize:rect.size];
 			[cornerBadge setSize:[bestBadgeRep size]];
-			NSRect badgeRect=rectFromSize([cornerBadge size]);
-			
+			NSRect badgeRect = rectFromSize([cornerBadge size]);
+
 			//NSPoint offset=rectOffset(badgeRect,rect,2);
-			badgeRect=centerRectInRect(badgeRect,rect);
-			badgeRect=NSOffsetRect(badgeRect,0,NSHeight(rect)/2-NSHeight(badgeRect)/2);
-			
-			[[NSColor colorWithDeviceWhite:1.0 alpha:0.8]set];
+			badgeRect = centerRectInRect(badgeRect, rect);
+			badgeRect = NSOffsetRect(badgeRect, 0, NSHeight(rect) / 2 - NSHeight(badgeRect) / 2);
+
+			[[NSColor colorWithDeviceWhite:1.0 alpha:0.8] set];
 			//NSRectFillUsingOperation(NSInsetRect(badgeRect,-3,-3),NSCompositeSourceOver);
-			[[NSColor colorWithDeviceWhite:0.75 alpha:1.0]set];
+			[[NSColor colorWithDeviceWhite:0.75 alpha:1.0] set];
 			//NSFrameRectWithWidth(NSInsetRect(badgeRect,-5,-5),2);
 			[cornerBadge drawInRect:badgeRect fromRect:rectFromSize([cornerBadge size]) operation:NSCompositeSourceOver fraction:1.0];
 		}
@@ -290,105 +377,172 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 @end
 
 
-#define kQSKeychainItemShowAction @"QSKeychainItemShowAction"
-#define kQSKeychainItemCopyPasswordAction @"QSKeychainItemCopyPasswordAction"
-#define kQSKeychainItemGetPasswordAction @"QSKeychainItemGetPasswordAction"
+#define kQSKeychainItemShowAction           @"QSKeychainItemShowAction"
+#define kQSKeychainItemCopyPasswordAction   @"QSKeychainItemCopyPasswordAction"
+#define kQSKeychainItemGetPasswordAction    @"QSKeychainItemGetPasswordAction"
+#define kQSKeychainItemPastePasswordAction  @"QSKeychainItemPastePasswordAction"
+#define kQSKeychainItemCopyAccountAction    @"QSKeychainItemCopyAccountAction"
+#define kQSKeychainItemGetAccountAction     @"QSKeychainItemGetAccountAction"
+#define kQSKeychainItemPasteAccountAction   @"QSKeychainItemPasteAccountAction"
 
-#define kQSKeychainLock @"QSKeychainLock"
-#define kQSKeychainUnlock @"QSKeychainUnlock"
-
+#define kQSKeychainLockAction               @"QSKeychainLockAction"
+#define kQSKeychainUnlockAction             @"QSKeychainUnlockAction"
 
 @implementation QSKeychainActionProvider
 
-//- (NSArray *) types{
-//    return [NSArray arrayWithObjects:QSKeychainInternetPasswordType,QSKeychainGenericPasswordType,QSKeychainAppleSharePasswordType,nil];
-//}
-- (NSArray *)xvalidActionsForDirectObject:(QSObject *)dObject indirectObject:(QSObject *)iObject{
-    return [NSArray arrayWithObjects:kQSKeychainItemCopyPasswordAction,kQSKeychainItemGetPasswordAction,nil];
-}
-
-- (QSObject *) showKeychainItem:(QSObject *)dObject{
-    
-	//AXUIElementRef app=AXUIElementCreateApplication(1099);
-	
-	
+- (NSArray *)validActionsForDirectObject:(QSObject *)dObject indirectObject:(QSObject *)iObject {
+    if ([[dObject primaryType] isEqualToString:QSKeychainType]) {
+        NSString *keychainPath = [dObject primaryObject];
+        BOOL state = NO;
+        BOOL res = isKeychainLocked(keychainPath, &state);
+        if (res)
+            return [NSArray arrayWithObject:(state ? kQSKeychainUnlockAction : kQSKeychainLockAction)];
+    } else if ([[dObject primaryType] isEqualToString:QSKeychainItemType]) {
+        NSDictionary *info = [dObject primaryObject];
+        NSString *itemType = typeForKeychainClass([info objectForKey:kSecClass], [info objectForKey:kSecAttrType]);
+        if ([itemType isEqualToString:QSKeychainGenericPasswordType]
+            || [itemType isEqualToString:QSKeychainInternetPasswordType]) {
+            return [NSArray arrayWithObjects:kQSKeychainItemCopyPasswordAction, kQSKeychainItemGetPasswordAction, kQSKeychainItemPastePasswordAction,
+                    kQSKeychainItemCopyAccountAction, kQSKeychainItemGetAccountAction, kQSKeychainItemPasteAccountAction,
+                    nil];
+        }
+    }
     return nil;
 }
 
-- (NSString *)passwordForKeychainObject:(QSObject *)dObject{
-	NSDictionary *info=[dObject primaryObject];
-	
-	
-	SecItemClass class=keychainClassForType([dObject primaryType]);
-	
-	SecKeychainSearchRef searchRef;
-	CFTypeRef keychainRef=NULL;
-	SecKeychainItemRef itemRef = NULL;
-	OSStatus status;
-	
-	NSString *label=[info objectForKey:NSFileTypeForHFSTypeCode(kSecLabelItemAttr)];
-	NSString *date=[info objectForKey:NSFileTypeForHFSTypeCode(kSecCreationDateItemAttr)];
-	
-	SecKeychainAttribute attrs[] = {
-		{kSecCreationDateItemAttr, [date length]+1, date},
-		{kSecLabelItemAttr, [label length], label}
-	};
-	///NSLog(@"label '%@' date  %d %d '%@' %@",label,[date length],[date cStringLength],[date dataUsingEncoding:NSUTF8StringEncoding],date);
-	const SecKeychainAttributeList attributes = { sizeof(attrs)/sizeof(attrs[0]),attrs};
-	
-	
-	NSString *password=nil;
-	if (!(status=SecKeychainSearchCreateFromAttributes(keychainRef,class,&attributes,&searchRef))){
-		while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-			UInt32 length;
-			void *data;
-			if(SecKeychainItemCopyContent(itemRef, NULL, NULL, &length, &data)==noErr) {
-                password=[NSString stringWithCString:data encoding:NSUTF8StringEncoding];
-                SecKeychainItemFreeContent(NULL, data);
-            }
-			//logKeychainEntry(itemRef);
-			//NSLog(@"Pass %@ %p %d",password,itemRef,status);
-			
-		}
-		CFRelease(searchRef);
-	}
-	return password;
+- (QSObject *) showKeychainItem:(QSObject *)dObject{
+    /* TODO */
+	//AXUIElementRef app=AXUIElementCreateApplication(1099);
+    return nil;
 }
-- (BOOL)copyPasswordForObject:(QSObject *)dObject{
-	NSString *password=[self passwordForKeychainObject:dObject];
-	
-	if (password){
-		NSPasteboard *pboard=[NSPasteboard generalPasteboard];
-		[pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType,QSPrivatePboardType,nil] owner:self];
+
+- (NSString *)passwordForKeychainObject:(QSObject *)dObject {
+	NSDictionary *info = [dObject primaryObject];
+    if (!info)
+        return nil;
+
+	SecKeychainItemRef itemRef = (SecKeychainItemRef)[info objectForKey:kSecRefValue];
+    NSData *passwordData = dataForKeychainItem(itemRef);
+
+	return [[[NSString alloc] initWithData:passwordData encoding:NSUTF8StringEncoding] autorelease];;
+}
+
+- (BOOL)copyPasswordForObject:(QSObject *)dObject {
+	NSString *password = [self passwordForKeychainObject:dObject];
+
+	if (password) {
+		NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+		[pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, QSPrivatePboardType, nil] owner:self];
 		[pboard setString:password forType:NSStringPboardType];
 		[pboard setString:password forType:QSPrivatePboardType];
-		
 	}
-	return password!=nil;
+	return password != nil;
 }
-- (QSObject *) copyPassword:(QSObject *)dObject{
+
+- (QSObject *)copyPassword:(QSObject *)dObject {
 	[self copyPasswordForObject:dObject];
 	return nil;
 }
 
-- (QSObject *) pastePassword:(QSObject *)dObject{
-	if ([self copyPasswordForObject:dObject]){
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"WindowsShouldHide" object:self];
-	[[NSApp keyWindow]orderOut:self];
-	QSForcePaste();
-	}else{
+- (QSObject *)pastePassword:(QSObject *)dObject {
+	if ([self copyPasswordForObject:dObject]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"WindowsShouldHide" object:self];
+        [[NSApp keyWindow] orderOut:self];
+        QSForcePaste();
+	} else {
 		NSBeep();
-		NSLog(@"Could not find password for %@",dObject);
+		NSLog(@"Could not find password for %@", dObject);
 	}
 	return nil;
 }
 
-- (QSObject *) getPassword:(QSObject *)dObject{
-	NSString *password=[self passwordForKeychainObject:dObject];
-	if (password)return [QSObject objectWithString:password];
-    return nil;
+- (QSObject *)getPassword:(QSObject *)dObject {
+	NSString *password = [self passwordForKeychainObject:dObject];
+	if (!password)
+        return nil;
+    QSObject *object = [QSObject objectWithString:password];
+    [object setParentID:[dObject identifier]];
+    return object;
 }
 
+- (NSString *)accountForKeychainObject:(QSObject *)dObject {
+	NSDictionary *info = [dObject primaryObject];
+
+	return info ? [info objectForKey:kSecAttrAccount] : nil;
+}
+
+- (BOOL)copyAccountForObject:(QSObject *)dObject {
+	NSString *account = [self accountForKeychainObject:dObject];
+
+	if (account) {
+		NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+		[pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, nil] owner:self];
+		[pboard setString:account forType:NSStringPboardType];
+	}
+	return account != nil;
+}
+
+- (QSObject *)copyAccount:(QSObject *)dObject {
+	[self copyAccountForObject:dObject];
+	return nil;
+}
+
+- (QSObject *)pasteAccount:(QSObject *)dObject {
+	if ([self copyAccountForObject:dObject]) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"WindowsShouldHide" object:self];
+        [[NSApp keyWindow] orderOut:self];
+        QSForcePaste();
+	} else {
+		NSBeep();
+		NSLog(@"Could not find password for %@", dObject);
+	}
+	return nil;
+}
+
+- (QSObject *)getAccount:(QSObject *)dObject {
+	NSString *account = [self accountForKeychainObject:dObject];
+	if (!account)
+        return nil;
+    QSObject *object = [QSObject objectWithString:account];
+    [object setParentID:[dObject identifier]];
+    return object;
+}
+
+- (BOOL)changeKeychain:(NSString *)keychainPath lock:(BOOL)lock {
+    OSStatus err = noErr;
+    SecKeychainRef keychainRef = NULL;
+    err = SecKeychainOpen([keychainPath fileSystemRepresentation], &keychainRef);
+    if (err != noErr) {
+        NSLog(@"Failed to open Keychain at path %@: %@ (%ld)", keychainPath, errorForKeychainOSStatus(err), (long)err);
+        return NO;
+    }
+    if (lock)
+        err = SecKeychainLock(keychainRef);
+    else
+        err = SecKeychainUnlock(keychainRef, 0, NULL, false);
+
+    if (err != noErr) {
+        NSLog(@"Failed to %@ Keychain at path %@: %@ %ld", (lock ? @"lock" : @"unlock"), keychainPath, errorForKeychainOSStatus(err), (long)err);
+    }
+    CFRelease(keychainRef);
+    return (err != noErr);
+}
+
+- (QSObject *)unlockKeychain:(QSObject *)dObject {
+    NSString *keychainPath = [dObject objectForType:QSKeychainType];
+    if (keychainPath) {
+        [self changeKeychain:keychainPath lock:NO];
+    }
+    return dObject;
+}
+
+- (QSObject *)lockKeychain:(QSObject *)dObject {
+    NSString *keychainPath = [dObject objectForType:QSKeychainType];
+    if (keychainPath) {
+        [self changeKeychain:keychainPath lock:YES];
+    }
+    return dObject;
+}
 
 /*
  show_key("10.0.1.100")
@@ -420,24 +574,3 @@ QSObject *objectForKeychainRef(SecKeychainItemRef itemRef,SecItemClass itemClass
 
 @end
 
-
-/* OLD attribute copying code: crashed when getting label attribute
-UInt32 tags[]={kSecGenericItemAttr,kSecAccountItemAttr,kSecDescriptionItemAttr,kSecCommentItemAttr,kSecTypeItemAttr,kSecServiceItemAttr};
-int count=sizeof(tags) / sizeof(tags[0]);
-SecKeychainAttributeInfo info = { count, &tags,NULL };
-while((status = SecKeychainSearchCopyNext(searchRef,&itemRef))!=errSecItemNotFound){
-	logKeychainEntry(itemRef);
-	
-	status=SecKeychainItemCopyAttributesAndData(itemRef,&info,NULL,&attrList,NULL,NULL);
-	//attrList=*attrList;
-	if (!status){
-		
-		NSLog(@"--");
-		int i;
-		for (i=0;i<count;i++){
-			//NSLog(@"%d - %@",i,[NSString stringWithCString:attrList->attr[i].data length:attrList->attr[i].length]);
-		}
-		
-	}else{NSLog(@"err %d",status);}
-	SecKeychainItemFreeAttributesAndData(attrList,NULL);
-	*/

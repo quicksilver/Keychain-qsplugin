@@ -24,6 +24,52 @@
 	<string>Copyright © 2004, Blacktree, Inc.</string>
 	<key>QSActions</key>
 	<dict>
+		<key>QSKeychainUnlockAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>unlockKeychain:</string>
+			<key>description</key>
+			<string>Unlock keychain</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainType</string>
+			</array>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Unlock</string>
+			<key>rankModification</key>
+			<real>0.1</real>
+			<key>validatesObjects</key>
+			<true/>
+			<key>displaysResult</key>
+			<true/>
+		</dict>
+		<key>QSKeychainLockAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>lockKeychain:</string>
+			<key>description</key>
+			<string>Lock keychain</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainType</string>
+			</array>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Lock</string>
+			<key>rankModification</key>
+			<real>0.1</real>
+			<key>validatesObjects</key>
+			<true/>
+			<key>displaysResult</key>
+			<true/>
+		</dict>
 		<key>QSKeychainItemCopyPasswordAction</key>
 		<dict>
 			<key>actionClass</key>
@@ -34,9 +80,7 @@
 			<string>Copy password to the clipboard</string>
 			<key>directTypes</key>
 			<array>
-				<string>QSKeychainGenericPasswordType</string>
-				<string>QSKeychainInternetPasswordType</string>
-				<string>QSKeychainAppleSharePasswordType</string>
+				<string>QSKeychainItemType</string>
 			</array>
 			<key>icon</key>
 			<string>com.apple.keychainaccess</string>
@@ -45,7 +89,7 @@
 			<key>rankModification</key>
 			<real>0.1</real>
 			<key>validatesObjects</key>
-			<false/>
+			<true/>
 		</dict>
 		<key>QSKeychainItemGetPasswordAction</key>
 		<dict>
@@ -57,9 +101,7 @@
 			<string>Return password to command</string>
 			<key>directTypes</key>
 			<array>
-				<string>QSKeychainGenericPasswordType</string>
-				<string>QSKeychainInternetPasswordType</string>
-				<string>QSKeychainAppleSharePasswordType</string>
+				<string>QSKeychainItemType</string>
 			</array>
 			<key>displaysResult</key>
 			<true/>
@@ -70,7 +112,7 @@
 			<key>rankModification</key>
 			<real>0.1</real>
 			<key>validatesObjects</key>
-			<false/>
+			<true/>
 		</dict>
 		<key>QSKeychainItemPastePasswordAction</key>
 		<dict>
@@ -82,9 +124,7 @@
 			<string>Paste password to the current application</string>
 			<key>directTypes</key>
 			<array>
-				<string>QSKeychainGenericPasswordType</string>
-				<string>QSKeychainInternetPasswordType</string>
-				<string>QSKeychainAppleSharePasswordType</string>
+				<string>QSKeychainItemType</string>
 			</array>
 			<key>icon</key>
 			<string>com.apple.keychainaccess</string>
@@ -93,9 +133,74 @@
 			<key>rankModification</key>
 			<real>0.1</real>
 			<key>validatesObjects</key>
-			<false/>
+			<true/>
 		</dict>
-		<key>QSKeychainShowAction</key>
+		<key>QSKeychainItemCopyAccountAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>copyAccount:</string>
+			<key>description</key>
+			<string>Copy account to the clipboard</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainItemType</string>
+			</array>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Copy Account</string>
+			<key>rankModification</key>
+			<real>0.1</real>
+			<key>validatesObjects</key>
+			<true/>
+		</dict>
+		<key>QSKeychainItemGetAccountAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>getAccount:</string>
+			<key>description</key>
+			<string>Return account to command</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainItemType</string>
+			</array>
+			<key>displaysResult</key>
+			<true/>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Get Account</string>
+			<key>rankModification</key>
+			<real>0.1</real>
+			<key>validatesObjects</key>
+			<true/>
+		</dict>
+		<key>QSKeychainItemPasteAccountAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>pasteAccount:</string>
+			<key>description</key>
+			<string>Paste account to the current application</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainItemType</string>
+			</array>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Paste Account</string>
+			<key>rankModification</key>
+			<real>0.1</real>
+			<key>validatesObjects</key>
+			<true/>
+		</dict>
+		<key>QSKeychainItemShowAction</key>
 		<dict>
 			<key>actionClass</key>
 			<string>QSKeychainActionProvider</string>
@@ -103,9 +208,7 @@
 			<string>showKeychainItem:</string>
 			<key>directTypes</key>
 			<array>
-				<string>QSKeychainGenericPasswordType</string>
-				<string>QSKeychainInternetPasswordType</string>
-				<string>QSKeychainAppleSharePasswordType</string>
+				<string>QSKeychainItemType</string>
 			</array>
 			<key>disabled</key>
 			<true/>
@@ -116,7 +219,7 @@
 			<key>rankModification</key>
 			<real>0.1</real>
 			<key>validatesObjects</key>
-			<false/>
+			<true/>
 		</dict>
 	</dict>
 	<key>QSPlugIn</key>
@@ -165,11 +268,7 @@
 		</dict>
 		<key>QSObjectHandlers</key>
 		<dict>
-			<key>QSKeychainAppleSharePasswordType</key>
-			<string>QSKeychainSource</string>
-			<key>QSKeychainGenericPasswordType</key>
-			<string>QSKeychainSource</string>
-			<key>QSKeychainInternetPasswordType</key>
+			<key>QSKeychainItemType</key>
 			<string>QSKeychainSource</string>
 			<key>QSKeychainType</key>
 			<string>QSKeychainSource</string>
@@ -182,33 +281,54 @@
 	</dict>
 	<key>QSResourceAdditions</key>
 	<dict>
+		<key>KeychainLockedIcon</key>
+		<dict>
+			<key>bundle</key>
+			<string>com.apple.keychainaccess</string>
+			<key>resource</key>
+			<string>Keychain_Locked.png</string>
+		</dict>
+		<key>KeychainUnlockedIcon</key>
+		<dict>
+			<key>bundle</key>
+			<string>com.apple.keychainaccess</string>
+			<key>resource</key>
+			<string>Keychain_Unlocked.png</string>
+		</dict>
 		<key>KeychainKeyIcon</key>
 		<dict>
 			<key>bundle</key>
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
-			<string>Key_Large.tif</string>
+			<string>Key_Large.png</string>
 		</dict>
 		<key>KeychainNetVolIcon</key>
 		<dict>
 			<key>bundle</key>
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
-			<string>AppleShare Large.tif</string>
+			<string>netvol.icns</string>
 		</dict>
 		<key>KeychainSecureNoteIcon</key>
 		<dict>
 			<key>bundle</key>
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
-			<string>Secure Note Large.tif</string>
+			<string>securenote.icns</string>
 		</dict>
 		<key>KeychainURLIcon</key>
 		<dict>
 			<key>bundle</key>
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
-			<string>Internet_Large.tif</string>
+			<string>InternetAccounts.icns</string>
+		</dict>
+		<key>KeychainCertificateIcon</key>
+		<dict>
+			<key>bundle</key>
+			<string>com.apple.keychainaccess</string>
+			<key>resource</key>
+			<string>CertStackLarge.png</string>
 		</dict>
 	</dict>
 </dict>
