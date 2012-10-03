@@ -446,6 +446,8 @@ OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallba
 
 - (QSObject *)pastePassword:(QSObject *)dObject {
 	if ([self copyPasswordForObject:dObject]) {
+        /* Let the Keychain access window disappear */
+        [NSThread sleepForTimeInterval:1.0];
         [[NSNotificationCenter defaultCenter] postNotificationName:@"WindowsShouldHide" object:self];
         [[NSApp keyWindow] orderOut:self];
         QSForcePaste();
