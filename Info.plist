@@ -40,8 +40,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Unlock</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 			<key>displaysResult</key>
@@ -63,8 +63,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Lock</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 			<key>displaysResult</key>
@@ -86,8 +86,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Copy Password</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
@@ -109,8 +109,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Get Password</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
@@ -130,8 +130,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Paste Password</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
@@ -151,8 +151,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Copy Account</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
@@ -174,8 +174,8 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Get Account</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
@@ -195,12 +195,12 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Paste Account</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
-		<key>QSKeychainItemShowAction</key>
+		<!-- <key>QSKeychainItemShowAction</key>
 		<dict>
 			<key>actionClass</key>
 			<string>QSKeychainActionProvider</string>
@@ -216,11 +216,11 @@
 			<integer>4</integer>
 			<key>icon</key>
 			<string>com.apple.keychainaccess</string>
-			<key>rankModification</key>
-			<real>0.1</real>
+			<key>precedence</key>
+			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
-		</dict>
+		</dict> -->
 	</dict>
 	<key>QSPlugIn</key>
 	<dict>
@@ -277,6 +277,23 @@
 		<dict>
 			<key>QSKeychainSource</key>
 			<string>QSKeychainSource</string>
+		</dict>
+		<key>QSTypeDefinitions</key>
+		<dict>
+			<key>QSKeychainItemType</key>
+			<dict>
+				<key>icon</key>
+				<string>KeychainKeyIcon</string>
+				<key>name</key>
+				<string>Keychain Item</string>
+			</dict>
+			<key>QSKeychainType</key>
+			<dict>
+				<key>icon</key>
+				<string>KeychainLockedIcon</string>
+				<key>name</key>
+				<string>Keychain</string>
+			</dict>
 		</dict>
 	</dict>
 	<key>QSResourceAdditions</key>
