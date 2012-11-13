@@ -130,8 +130,11 @@ OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallba
 
         NSString *identifier = [NSString stringWithFormat:@"%@:%@", @"[Keychain]", keychainPath];
         QSObject *keychainObject = [QSObject objectWithIdentifier:identifier];
-        if (keychainObject)
-            [[NSNotificationCenter defaultCenter] postNotificationName:QSObjectIconModified object:keychainObject];
+        if (keychainObject) {
+            /* Force the icon to refresh */
+            [keychainObject unloadIcon];
+            [keychainObject loadIcon];
+        }
     }
     return noErr;
 }
@@ -336,7 +339,7 @@ OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallba
     }
 	
 	if (icon) {
-		[object setIcon:icon];
+		[object updateIcon:icon];
 		return YES;
 	}
 	
