@@ -19,6 +19,7 @@
 		14DE8C9610D0B1C800851A6F /* Developer.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Developer.xcconfig; sourceTree = "<group>"; };
 		14DE8C9A10D0B1C800851A6F /* QSPlugIn.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = QSPlugIn.xcconfig; sourceTree = "<group>"; };
 		14DE8C9B10D0B1C800851A6F /* Release.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		4D9919B51622EE4700A8949B /* Documentation.mdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = Documentation.mdown; sourceTree = "<group>"; };
 		8D1AC9730486D14A00FE50C9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1AC9740486D14A00FE50C9 /* Keychain Plugin.qsplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Keychain Plugin.qsplugin"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D45BF77F15ADCA300016E503 /* Quicksilver.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Quicksilver.pch; sourceTree = "<group>"; };
@@ -56,6 +57,7 @@
 		0259C582FE90428111CA0C5A /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				4D9919B51622EE4700A8949B /* Documentation.mdown */,
 				8D1AC9730486D14A00FE50C9 /* Info.plist */,
 			);
 			name = Resources;
@@ -108,10 +110,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7FFF2449085E488500266176 /* Build configuration list for PBXNativeTarget "Keychain Module" */;
 			buildPhases = (
+				E1022B2806B3475D00299BEC /* Run bltrversion */,
 				8D1AC9660486D14A00FE50C9 /* Resources */,
 				8D1AC96A0486D14A00FE50C9 /* Sources */,
 				8D1AC96E0486D14A00FE50C9 /* Frameworks */,
-				E1022B2806B3475D00299BEC /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -159,18 +161,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		E1022B2806B3475D00299BEC /* ShellScript */ = {
+		E1022B2806B3475D00299BEC /* Run bltrversion */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
+			name = "Run bltrversion";
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "$SRCROOT/bltrversion $INFOPLIST_FILE";
+			shellScript = $QS_BUILD_ROOT/Tools/bltrversion;
 		};
 /* End PBXShellScriptBuildPhase section */
 
