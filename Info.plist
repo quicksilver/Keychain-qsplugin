@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDisplayName</key>
+	<string>Keychain</string>
 	<key>CFBundleExecutable</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleIdentifier</key>
@@ -14,60 +16,31 @@
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
-	<key>CFBundleVersion</key>
-	<string>13C</string>
-	<key>CFBundleDisplayName</key>
-	<string>Keychain</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.1.0</string>
-	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2004, Blacktree, Inc.</string>
+	<key>CFBundleVersion</key>
+	<string>13C</string>
 	<key>QSActions</key>
 	<dict>
-		<key>QSKeychainUnlockAction</key>
+		<key>QSKeychainItemCopyAccountAction</key>
 		<dict>
 			<key>actionClass</key>
 			<string>QSKeychainActionProvider</string>
 			<key>actionSelector</key>
-			<string>unlockKeychain:</string>
+			<string>copyAccount:</string>
 			<key>description</key>
-			<string>Unlock keychain</string>
+			<string>Copy account to the clipboard</string>
 			<key>directTypes</key>
 			<array>
-				<string>QSKeychainType</string>
+				<string>QSKeychainItemType</string>
 			</array>
 			<key>icon</key>
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
-			<string>Unlock</string>
+			<string>Copy Account</string>
 			<key>precedence</key>
 			<real>2.0</real>
 			<key>validatesObjects</key>
-			<true/>
-			<key>displaysResult</key>
-			<true/>
-		</dict>
-		<key>QSKeychainLockAction</key>
-		<dict>
-			<key>actionClass</key>
-			<string>QSKeychainActionProvider</string>
-			<key>actionSelector</key>
-			<string>lockKeychain:</string>
-			<key>description</key>
-			<string>Lock keychain</string>
-			<key>directTypes</key>
-			<array>
-				<string>QSKeychainType</string>
-			</array>
-			<key>icon</key>
-			<string>com.apple.keychainaccess</string>
-			<key>name</key>
-			<string>Lock</string>
-			<key>precedence</key>
-			<real>2.0</real>
-			<key>validatesObjects</key>
-			<true/>
-			<key>displaysResult</key>
 			<true/>
 		</dict>
 		<key>QSKeychainItemCopyPasswordAction</key>
@@ -86,71 +59,6 @@
 			<string>com.apple.keychainaccess</string>
 			<key>name</key>
 			<string>Copy Password</string>
-			<key>precedence</key>
-			<real>2.0</real>
-			<key>validatesObjects</key>
-			<true/>
-		</dict>
-		<key>QSKeychainItemGetPasswordAction</key>
-		<dict>
-			<key>actionClass</key>
-			<string>QSKeychainActionProvider</string>
-			<key>actionSelector</key>
-			<string>getPassword:</string>
-			<key>description</key>
-			<string>Return password to command</string>
-			<key>directTypes</key>
-			<array>
-				<string>QSKeychainItemType</string>
-			</array>
-			<key>displaysResult</key>
-			<true/>
-			<key>icon</key>
-			<string>com.apple.keychainaccess</string>
-			<key>name</key>
-			<string>Get Password</string>
-			<key>precedence</key>
-			<real>2.0</real>
-			<key>validatesObjects</key>
-			<true/>
-		</dict>
-		<key>QSKeychainItemPastePasswordAction</key>
-		<dict>
-			<key>actionClass</key>
-			<string>QSKeychainActionProvider</string>
-			<key>actionSelector</key>
-			<string>pastePassword:</string>
-			<key>description</key>
-			<string>Paste password to the current application</string>
-			<key>directTypes</key>
-			<array>
-				<string>QSKeychainItemType</string>
-			</array>
-			<key>icon</key>
-			<string>com.apple.keychainaccess</string>
-			<key>name</key>
-			<string>Paste Password</string>
-			<key>precedence</key>
-			<real>2.0</real>
-			<key>validatesObjects</key>
-			<true/>
-		</dict>
-		<key>QSKeychainItemCopyAccountAction</key>
-		<dict>
-			<key>actionClass</key>
-			<string>QSKeychainActionProvider</string>
-			<key>actionSelector</key>
-			<string>copyAccount:</string>
-			<key>description</key>
-			<string>Copy account to the clipboard</string>
-			<key>directTypes</key>
-			<array>
-				<string>QSKeychainItemType</string>
-			</array>
-			<key>icon</key>
-			<string>com.apple.keychainaccess</string>
-			<key>name</key>
-			<string>Copy Account</string>
 			<key>precedence</key>
 			<real>2.0</real>
 			<key>validatesObjects</key>
@@ -179,6 +87,29 @@
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
+		<key>QSKeychainItemGetPasswordAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>getPassword:</string>
+			<key>description</key>
+			<string>Return password to command</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainItemType</string>
+			</array>
+			<key>displaysResult</key>
+			<true/>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Get Password</string>
+			<key>precedence</key>
+			<real>2.0</real>
+			<key>validatesObjects</key>
+			<true/>
+		</dict>
 		<key>QSKeychainItemPasteAccountAction</key>
 		<dict>
 			<key>actionClass</key>
@@ -200,27 +131,73 @@
 			<key>validatesObjects</key>
 			<true/>
 		</dict>
-		<!-- <key>QSKeychainItemShowAction</key>
+		<key>QSKeychainItemPastePasswordAction</key>
 		<dict>
 			<key>actionClass</key>
 			<string>QSKeychainActionProvider</string>
 			<key>actionSelector</key>
-			<string>showKeychainItem:</string>
+			<string>pastePassword:</string>
+			<key>description</key>
+			<string>Paste password to the current application</string>
 			<key>directTypes</key>
 			<array>
 				<string>QSKeychainItemType</string>
 			</array>
-			<key>disabled</key>
-			<true/>
-			<key>feature</key>
-			<integer>4</integer>
 			<key>icon</key>
 			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Paste Password</string>
 			<key>precedence</key>
 			<real>2.0</real>
 			<key>validatesObjects</key>
 			<true/>
-		</dict> -->
+		</dict>
+		<key>QSKeychainLockAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>lockKeychain:</string>
+			<key>description</key>
+			<string>Lock keychain</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainType</string>
+			</array>
+			<key>displaysResult</key>
+			<true/>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Lock</string>
+			<key>precedence</key>
+			<real>2.0</real>
+			<key>validatesObjects</key>
+			<true/>
+		</dict>
+		<key>QSKeychainUnlockAction</key>
+		<dict>
+			<key>actionClass</key>
+			<string>QSKeychainActionProvider</string>
+			<key>actionSelector</key>
+			<string>unlockKeychain:</string>
+			<key>description</key>
+			<string>Unlock keychain</string>
+			<key>directTypes</key>
+			<array>
+				<string>QSKeychainType</string>
+			</array>
+			<key>displaysResult</key>
+			<true/>
+			<key>icon</key>
+			<string>com.apple.keychainaccess</string>
+			<key>name</key>
+			<string>Unlock</string>
+			<key>precedence</key>
+			<real>2.0</real>
+			<key>validatesObjects</key>
+			<true/>
+		</dict>
 	</dict>
 	<key>QSPlugIn</key>
 	<dict>
@@ -232,6 +209,42 @@
 		</array>
 		<key>description</key>
 		<string>Access to Keychain entries</string>
+		<key>extendedDescription</key>
+		<string>&lt;h1&gt;Keychain plugin&lt;/h1&gt;
+&lt;p&gt;This plugin gives Quicksilver the ability to access data stored in Keychains -- Safari passwords as well as any other data added by applications -- and allows login names and associated passwords to be directly manipulated or retrieved directly by copy/pasting.&lt;/p&gt;
+&lt;h2&gt;Catalog&lt;/h2&gt;
+&lt;dl&gt;
+&lt;dt&gt;Keychains&lt;/dt&gt;
+&lt;dd&gt;This will add "login" and "System" keychains to your catalog as well as any others you have defined. You can also access keychains by selecting Keychain Access and hitting → or /. With a keychain selected, hit → or / to access individual items.&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;h2&gt;Actions&lt;/h2&gt;
+&lt;p&gt;With a keychain selected, the following actions will be available:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Lock&lt;/li&gt;
+&lt;li&gt;Unlock&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;With a keychain item selected, the following actions will be available:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Copy Account&lt;/li&gt;
+&lt;li&gt;Paste Account&lt;/li&gt;
+&lt;li&gt;Get Account&lt;/li&gt;
+&lt;li&gt;Copy Password&lt;/li&gt;
+&lt;li&gt;Paste Password&lt;/li&gt;
+&lt;li&gt;Get Password&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;Terminology&lt;/h3&gt;
+&lt;dl&gt;
+&lt;dt&gt;Account&lt;/dt&gt;
+&lt;dd&gt;The value from the "Account" field in Keychain Access. This is usually the username.&lt;/dd&gt;
+&lt;dt&gt;Password&lt;/dt&gt;
+&lt;dd&gt;The password stored with this item. You will be prompted to allow Quicksilver access to an item if it hasn't been granted before.&lt;/dd&gt;
+&lt;dt&gt;Get&lt;/dt&gt;
+&lt;dd&gt;Display the account or password as text in Quicksilver's first pane for further action.&lt;/dd&gt;
+&lt;dt&gt;Copy&lt;/dt&gt;
+&lt;dd&gt;Copy the account or password to the clipboard.&lt;/dd&gt;
+&lt;dt&gt;Paste&lt;/dt&gt;
+&lt;dd&gt;Paste the account or password to the active application.&lt;/dd&gt;
+&lt;/dl&gt;</string>
 		<key>icon</key>
 		<string>com.apple.keychainaccess</string>
 		<key>relatedBundles</key>
@@ -298,19 +311,12 @@
 	</dict>
 	<key>QSResourceAdditions</key>
 	<dict>
-		<key>KeychainLockedIcon</key>
+		<key>KeychainCertificateIcon</key>
 		<dict>
 			<key>bundle</key>
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
-			<string>Keychain_Locked.png</string>
-		</dict>
-		<key>KeychainUnlockedIcon</key>
-		<dict>
-			<key>bundle</key>
-			<string>com.apple.keychainaccess</string>
-			<key>resource</key>
-			<string>Keychain_Unlocked.png</string>
+			<string>CertStackLarge.png</string>
 		</dict>
 		<key>KeychainKeyIcon</key>
 		<dict>
@@ -318,6 +324,13 @@
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
 			<string>Key_Large.png</string>
+		</dict>
+		<key>KeychainLockedIcon</key>
+		<dict>
+			<key>bundle</key>
+			<string>com.apple.keychainaccess</string>
+			<key>resource</key>
+			<string>Keychain_Locked.png</string>
 		</dict>
 		<key>KeychainNetVolIcon</key>
 		<dict>
@@ -340,12 +353,12 @@
 			<key>resource</key>
 			<string>InternetAccounts.icns</string>
 		</dict>
-		<key>KeychainCertificateIcon</key>
+		<key>KeychainUnlockedIcon</key>
 		<dict>
 			<key>bundle</key>
 			<string>com.apple.keychainaccess</string>
 			<key>resource</key>
-			<string>CertStackLarge.png</string>
+			<string>Keychain_Unlocked.png</string>
 		</dict>
 	</dict>
 </dict>
