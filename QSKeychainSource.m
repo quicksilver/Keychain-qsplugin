@@ -435,9 +435,9 @@ OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallba
 
 	if (password) {
 		NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-		[pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, QSPasteboardTransientType, nil] owner:self];
+		[pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, QSPrivatePboardType, nil] owner:self];
 		[pboard setString:password forType:NSStringPboardType];
-		[pboard setString:password forType:QSPasteboardTransientType];
+		[pboard setString:password forType:QSPrivatePboardType];
 	}
 	return password != nil;
 }

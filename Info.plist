@@ -17,9 +17,9 @@
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.1</string>
+	<string>1.1.0</string>
 	<key>CFBundleVersion</key>
-	<string>13D</string>
+	<string>13C</string>
 	<key>QSActions</key>
 	<dict>
 		<key>QSKeychainItemCopyAccountAction</key>
@@ -312,7 +312,7 @@
 	<key>QSRequirements</key>
 	<dict>
 		<key>version</key>
-		<string>4000</string>
+		<string>3936</string>
 	</dict>
 	<key>QSResourceAdditions</key>
 	<dict>
