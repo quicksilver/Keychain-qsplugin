@@ -48,6 +48,9 @@ CFTypeRef keychainClassForType(NSString *class){
 }
 
 NSArray *itemsInKeychainForClass(SecKeychainRef keychainRef, CFTypeRef itemClass) {
+    if (!keychainRef) {
+        return nil;
+    }
     CFArrayRef results;
     NSDictionary *query = [NSDictionary dictionaryWithObjectsAndKeys:
                            itemClass,       kSecClass,
@@ -291,7 +294,9 @@ OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallba
                                                                errorDescription:NULL];
 
             QSObject *noteObject = [QSObject objectWithString:[propertyList objectForKey:@"NOTE"]];
-            [object setChildren:[NSArray arrayWithObject:noteObject]];
+            if (object) {
+                [object setChildren:[NSArray arrayWithObject:noteObject]];
+            }
             return YES;
         }
     } else {
