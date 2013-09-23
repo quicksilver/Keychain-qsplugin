@@ -231,6 +231,17 @@ OSStatus keychainEventCallback(SecKeychainEvent keychainEvent, SecKeychainCallba
 	return objects;
 }
 
+- (BOOL)objectHasChildren:(QSObject *)object {
+    NSString *primaryType = [object primaryType];
+    if ([primaryType isEqualToString:QSKeychainItemType]) {
+        NSDictionary *info = [object primaryObject];
+        NSString *type = typeForKeychainClass([info objectForKey:kSecClass], [info objectForKey:kSecAttrType]);
+        if ([type isEqualToString:QSKeychainSecureNoteType]) {
+            return YES;
+        }
+    }
+    return [primaryType isEqualToString:QSKeychainType];
+}
 
 - (NSString *)detailsOfObject:(QSObject *)object{
     NSDictionary *info = [object objectForType:QSKeychainItemType];
